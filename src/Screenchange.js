@@ -1,34 +1,41 @@
 
-import React, { useEffect } from 'react';
-import './App.css'
+
+
+import React, { useEffect, useState } from 'react';
+import './App.css';
+
 const Screenchange = () => {
+  const [count, setCount] = useState(0);
+
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        console.log('Document is hidden');
-        // Handle the app being minimized or switched away
-      } else {
-        console.log('Document is visible');
-        // Handle the app being restored or switched back
+      if (!document.hidden) {
+        // Increase the count when the document becomes visible
+        setCount(prevCount => {
+          const newCount = prevCount + 1;
+          if (newCount >= 4) {
+            alert(`This is your ${newCount}th time of visibility change.`);
+            
+          } else {
+            alert("You have exceeded the visibility change limit.");
+          }
+          return newCount;
+        });
       }
     };
 
     const handleFocus = () => {
       console.log('Window has gained focus');
-      alert("Screen is change is track")
-      // Handle the window gaining focus
-    }; 
+    };
 
     const handleBlur = () => {
       console.log('Window has lost focus');
-      // Handle the window losing focus
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('focus', handleFocus);
     window.addEventListener('blur', handleBlur);
 
-    // Cleanup event listeners on component unmount
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('focus', handleFocus);
@@ -36,9 +43,12 @@ const Screenchange = () => {
     };
   }, []);
 
-  return <div>
-  <h1>  Hello World</h1>
-  </div>;
+  return (
+    <div>
+      <h1>Hello World</h1>
+      <p>Focus Count: {count}</p>
+    </div>
+  );
 };
 
 export default Screenchange;
